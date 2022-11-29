@@ -1,6 +1,38 @@
 import telebot
+import torch
 from telebot import types
+from simpletransformers.classification import ClassificationModel, ClassificationArgs
+
 bot = telebot.TeleBot('5587548573:AAEcIvCllm1AZGPH9iI30NhImYOaTPnKaSI')
+
+model1 = ClassificationModel(
+    "bert", "model/0", use_cuda=False
+)
+model2 = ClassificationModel(
+    "bert", "model/1", use_cuda=False
+)
+model3 = ClassificationModel(
+    "bert", "model/2", use_cuda=False
+)
+model4 = ClassificationModel(
+    "bert", "model/3", use_cuda=False
+)
+model5 = ClassificationModel(
+    "bert", "model/4", use_cuda=False
+)
+model6 = ClassificationModel(
+    "bert", "model/5", use_cuda=False
+)
+model7 = ClassificationModel(
+    "bert", "model/6", use_cuda=False
+)
+model8 = ClassificationModel(
+    "bert", "model/7", use_cuda=False
+)
+model9 = ClassificationModel(
+    "bert", "model/8", use_cuda=False
+)
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -8,7 +40,9 @@ def start(message):
     btn1 = types.KeyboardButton("О проекте")
     btn3 = types.KeyboardButton('Команда проекта')
     markup.add(btn1, btn3)
-    bot.send_message(message.chat.id, text="Привет, {0.first_name}! Я тестовый бот для проекта Зелёный Мир. Если ты хочешь проанализировать свой текст на наличие экологических практик, вставь свой текст и отправь его!".format(message.from_user),reply_markup=markup)
+    bot.send_message(message.chat.id,
+                     text="Привет, {0.first_name}! Я тестовый бот для проекта Зелёный Мир. Если ты хочешь проанализировать свой текст на наличие экологических практик, вставь свой текст и отправь его!".format(
+                         message.from_user), reply_markup=markup)
 
 
 @bot.message_handler(content_types=['text'])
@@ -16,7 +50,9 @@ def func(message):
     if (message.text == "О проекте"):
         markup = types.InlineKeyboardMarkup(row_width=2)
         markup.add(types.InlineKeyboardButton('Читать до конца', url='https://bmm2022.mca.nsu.ru/project/35'))
-        bot.send_message(message.chat.id, 'Ученые считают, что рост потребления — это главная причина современных экологических проблем и изменения климата. Поэтому для преодоления экологического кризиса нам требуется изменить наше поведение и привычки. Однако не все зеленые инициативы и практики, которые направлены на гармонизацию наших отношений с окружающей средой, направлены на сокращение потребления.',reply_markup=markup)
+        bot.send_message(message.chat.id,
+                         'Ученые считают, что рост потребления — это главная причина современных экологических проблем и изменения климата. Поэтому для преодоления экологического кризиса нам требуется изменить наше поведение и привычки. Однако не все зеленые инициативы и практики, которые направлены на гармонизацию наших отношений с окружающей средой, направлены на сокращение потребления.',
+                         reply_markup=markup)
 
 
     elif (message.text == 'Команда проекта'):
@@ -117,9 +153,37 @@ def func(message):
 
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        bot.send_message(message.chat.id, 'Вставить Берты', reply_markup=markup)
+        bot.send_message(message.chat.id, 'Я начал анализ', reply_markup=markup)
+        arr_ = []
+        ans = ''
+        predictions, raw_outputs = model1.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Сортировка отходов(1), '
+        predictions, raw_outputs = model2.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Изучение маркировки упаковки(2), '
+        predictions, raw_outputs = model3.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Переработка отходов(3), '
+        predictions, raw_outputs = model4.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Петиции(4), '
+        predictions, raw_outputs = model5.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Отказ от покупок(5), '
+        predictions, raw_outputs = model6.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Обмен(6),'
+        predictions, raw_outputs = model7.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Совместное использование(7), '
+        predictions, raw_outputs = model8.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Продвижение ответственного потребления(8), '
+        predictions, raw_outputs = model9.predict([message.text])
+        if predictions[0] == 1:
+            ans += 'Ремонт(9)'
+        bot.send_message(message.chat.id, f'В вашем тексте найдены следующие практики: {ans} практики !')
+
 
 bot.polling(none_stop=True)
-
-
-
